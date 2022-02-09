@@ -1,7 +1,7 @@
 #include <stdio.h>
 //pas de variable globale ici
 
-int main()
+int hello()
 {
   int year;
   year = 2022;
