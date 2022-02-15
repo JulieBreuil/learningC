@@ -1,4 +1,4 @@
-all : affichage scannage fonction portee
+all : affichage scannage fonction portee flottant
 affichage : affichage.o
 						gcc affichage.o -o affichage
 
@@ -23,5 +23,12 @@ portee : portee.o
 portee.o : portee.c
 						gcc -c portee.c -o portee.o
 
+flottant : flottant.o
+						gcc flottant.o -o flottant
+
+flottant.o : flottant.c
+						gcc -c flottant.c -o flottant.o
+
+
 clean :
-						rm -f affichage scannage fonction portee *.o						
+						rm -f affichage scannage fonction portee flottant *.o						
