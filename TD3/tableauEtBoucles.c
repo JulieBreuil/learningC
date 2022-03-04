@@ -1,5 +1,5 @@
 #include <stdio.h>
-#define N 5
+#define N 5 //c'est comme si on définissait une variable globale fixée. Dans tout le pgrm N sera égale à 5
 
 int produit_scalaire(int A[N], int B[N]){
   //QUESTION 4
@@ -52,5 +52,5 @@ int main()
   //QUESTION 4
   int A[5]={1,2,3,4,5};
   int mon_prod_sca = produit_scalaire(A,A);
-  printf("%d\n",mon_prod_sca);
+  printf("%d\n",mon_prod_sca);  
 }
