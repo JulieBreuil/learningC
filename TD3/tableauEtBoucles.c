@@ -1,4 +1,16 @@
 #include <stdio.h>
+#define N 5
+
+int produit_scalaire(int A[N], int B[N]){
+  //QUESTION 4
+  int res = 0;
+  int i;
+  for (i=0;i<5;i++){
+    res=res+(A[i]*B[i]);
+    printf("%d\n",res);
+  }
+  return res;  
+}
 
 int main()
 {
@@ -23,15 +35,22 @@ int main()
   %*/
 
   //QUESTION 3
-    int i = 0;
-    while (i!=15){
-      printf("3*5=");
-      scanf("%d",&i);
-    }
-    printf("3*5 = %d\n",i);
+  int i = 0;
+  while (i!=15){
+    printf("3*5=");
+    scanf("%d",&i);
+  }
+  printf("3*5 = %d\n",i);
 
   //TEST BOUCLE FOR
-  for (i = 0; i < 10; i++)
-    printf("\ni = %d",i);
+  int j;
+  for (j = 0; j < 10; j++)
+    printf("\nj = %d",j);
+  printf("\nj = %d",j);
   printf("\n");
+
+  //QUESTION 4
+  int A[5]={1,2,3,4,5};
+  int mon_prod_sca = produit_scalaire(A,A);
+  printf("%d\n",mon_prod_sca);
 }
