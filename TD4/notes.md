@@ -14,7 +14,13 @@ type *nom-du-pointeur
 - allocation dynamique, réservation d'un espace mémoire pour stocker un objet
 ```
 char *malloc(int nombre-octets);
+// fonction qui retourne un pointeur de type char * pointant vers //// un objet de taille nombre-octets octets
 ```
+- libérer la mémoire allouée à p
+```
+free(p)
+```
+
 
 # introduction aux pointeurs
 ## Makefile
