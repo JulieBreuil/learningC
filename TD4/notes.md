@@ -13,5 +13,5 @@ type *nom-du-pointeur
 ```
 # introduction aux pointeurs
 - Q36 : int Tab[5] est une déclaration de variable. un tableau n'est pas une Lvalue
-
+- Q41 : l'écart est de 1
 

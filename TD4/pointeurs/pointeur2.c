@@ -16,4 +16,6 @@ int main()
   printf("p1 = %p \n",p1);
   printf("*p2 = %d \n",*p2);
   printf("p2 = %p \n",p2);
+  int ecart = p1 - p2;
+  printf("ecartp1-p2 = %p \n",ecart);
 }
