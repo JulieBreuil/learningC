@@ -11,6 +11,11 @@ type *nom-du-pointeur
 ```
 *p
 ```
+- allocation dynamique, réservation d'un espace mémoire pour stocker un objet
+```
+char *malloc(int nombre-octets);
+```
+
 # introduction aux pointeurs
 ## Makefile
 - $@ : nom de la cible
