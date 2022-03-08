@@ -14,7 +14,7 @@ all:  $(TARGET)
 
 %.o: %.c
 	gcc ${CFLAGS} -c $< -o $@
-
+# ${CFLAGS} est équivalent au résultat de la ligne 1
 
 tar: clean
 	cd ..; tar cvf  TD4-code.tar code/pointeur*.c code/Makefile code/produitScalaireSol.c
