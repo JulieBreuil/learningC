@@ -7,6 +7,10 @@
 ```
 type *nom-du-pointeur
 ```
+- la valeur stockée à l'adresse p
+```
+*p
+```
 # introduction aux pointeurs
 - Q36 : int Tab[5] est une déclaration de variable. un tableau n'est pas une Lvalue
 
