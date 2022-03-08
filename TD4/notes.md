@@ -1,4 +1,4 @@
-# important
+# à retenir
 - acceder à l'adresse d'une variable v
 ```
 &v
@@ -12,6 +12,12 @@ type *nom-du-pointeur
 *p
 ```
 # introduction aux pointeurs
+## Makefile
+- $@ : nom de la cible
+- $< : première dépendance
+- $^ : liste des dépendances
+
+## Questions
 - Q36 : int Tab[5] est une déclaration de variable. un tableau n'est pas une Lvalue
 - Q41 : l'écart est de 1
 

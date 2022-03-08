@@ -1,6 +1,6 @@
 CFLAGS = -g -Wall -DDEBUG 
 LDFLAGS =  -Wall
-SOURCE = pointeur1.c pointeur2.c pointeur3.c pointeur1-bis.c
+SOURCE = pointeur1.c pointeur2.c pointeur3.c pointeur1-bis.c produitScalaireSol.c
 OBJECT = $(SOURCE:.c=.o) #variable dynamique pour avoir les noms des .o
 TARGET = $(SOURCE:.c=)
 HEADER = $(wildcard *.h) #wildcard récupère tous les fichiers .h du repertoire
