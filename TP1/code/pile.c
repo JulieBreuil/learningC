@@ -23,7 +23,7 @@ PILE Empiler (PILE pile, int elem){
     pile1 = malloc(sizeof(*pile1));   
     (*pile1).elem = elem;
     (*pile1).suivant = pile;
-    return pile;
+    return pile1;
 }
 
 /************************************************
@@ -34,15 +34,15 @@ void afficherPile (PILE pile){
     
     //le type PILE est un pointeur vers un type ELEMPILE
     //il y a des priorités, le point est plus prioritaire que le *
-    pile = malloc(sizeof(*pile));   
     printf("%d\n",(*pile).elem);
     //même chose, mais en raccourci
     //printf("%d\n",pile->elem);
 
-    
-    printf("test2\n");
-    afficherPile(pile->suivant);
-
+    if (pile->suivant == NULL){
+        printf("Fin de l'affichage\n");
+    }else{
+        afficherPile(pile->suivant);
+    }     
 }
 
 
