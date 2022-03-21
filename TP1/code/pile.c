@@ -45,7 +45,7 @@ int Depiler(PILE* ppile){
     PILE pile;
     pile = *ppile;
 
-    //pile pointe vers le second élément, plus le premier
+    //pile pointe vers le second élément, et non plus le premier
     pile = pile -> suivant;
 
     //permet de libérer la mémoire qui était allouée au premier élément
