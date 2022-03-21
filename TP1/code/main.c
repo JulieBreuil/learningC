@@ -10,8 +10,7 @@
 
 int main(int argc,char **argv)	
 {
-  error1("Erreur, le programme se termine\n");
-  /*PILE pile1=NULL;
+  PILE pile1=NULL;
   int val,i;
 
   fprintf(stdout,"/********** test de pile d'entier *************\n");
@@ -25,6 +24,6 @@ int main(int argc,char **argv)
   afficherPile(pile1);
   fprintf(stdout,"/**** fin du programme de test de pile d'entier **\n");
 
-  return 0;*/
+  return 0;
  
 }

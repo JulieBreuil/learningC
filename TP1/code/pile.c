@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "pile.h"
 
 
@@ -18,7 +19,11 @@ int error1(char *message){
 * \result La fonction renvoie la pile modifiée
 **************************************************/    
 PILE Empiler (PILE pile, int elem){
-    
+    PILE pile1=NULL;
+    pile1 = malloc(sizeof(*pile1));   
+    (*pile1).elem = elem;
+    (*pile1).suivant = pile;
+    return pile;
 }
 
 /************************************************
@@ -26,12 +31,17 @@ PILE Empiler (PILE pile, int elem){
 * \param liste une liste d'entier
 **************************************************/    
 void afficherPile (PILE pile){
+    
     //le type PILE est un pointeur vers un type ELEMPILE
     //il y a des priorités, le point est plus prioritaire que le *
+    pile = malloc(sizeof(*pile));   
     printf("%d\n",(*pile).elem);
     //même chose, mais en raccourci
     //printf("%d\n",pile->elem);
 
+    
+    printf("test2\n");
+    afficherPile(pile->suivant);
 
 }
 
