@@ -22,6 +22,12 @@ int main(int argc,char **argv)
     }
   fprintf(stdout,"après mise en place d'une pile de taille %d\n",N);
   afficherPile(pile1);
+
+  pile1 = Depiler(&pile1);
+  fprintf(stdout,"/**** après dépilation **\n");
+  afficherPile(pile1);
+
+
   fprintf(stdout,"/**** fin du programme de test de pile d'entier **\n");
 
   return 0;

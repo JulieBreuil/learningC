@@ -27,6 +27,35 @@ PILE Empiler (PILE pile, int elem){
 }
 
 /************************************************
+* \brief    Retire l'element du sommet de la pile pointée par ppile et renvoie 
+   sa valeur. 
+* \param ppile un pointeur vers la pile 
+* \result Le résultat de la fonction est la 
+	  valeur de l'élément supprimé si aucune erreur n'est intervenue
+          La pile pointée par ppile a été modifiée: son premier 
+          élément a été supprimé (le deuxième élément est donc devenu 
+	  le sommet de pile). 
+* \remark    Si la pile pointé par ppile est vide, la fonction affiche une erreur et interrompt le programme.
+**************************************************/    
+int Depiler(PILE* ppile){
+    //ppile pointe vers une PILE
+    //une PILE pointe vers une ELEMPILE
+    
+    //on défiinit pile dont le pointeur est ppile
+    PILE pile;
+    pile = *ppile;
+
+    //pile pointe vers le second élément, plus le premier
+    pile = pile -> suivant;
+
+    //permet de libérer la mémoire qui était allouée au premier élément
+    free(*ppile);
+
+    //on modifie ppile en fonction de pile
+    *ppile = pile;
+}	
+
+/************************************************
 * \brief affiche une pile d'entier
 * \param liste une liste d'entier
 **************************************************/    
