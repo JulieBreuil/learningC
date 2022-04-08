@@ -19,6 +19,7 @@ int main()
   intToBigInt(1,bN1);
   intToBigInt(9,bN2);
   addBigInt(bN1,bN2,bN);
+  printBigInt(bN);
 
   if (bigIntToInt(bN)!= 10) 
     printf("Error addBigInt is not correct: %d + %d != %d\n",

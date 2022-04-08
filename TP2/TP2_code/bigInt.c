@@ -5,6 +5,7 @@
 #include "type_bigInt.h"
 #include "util_bigInt.h"
 #include "io_bigInt.h"
+#include <stdbool.h>
 
 #define DEBUG1
 
@@ -21,7 +22,40 @@
 * ************************************************/
 int addBigInt(bigInt bN1,bigInt bN2,bigInt res)
 {
-  return 0;
+  bool retenue = false;
+  int longbN1 = getNbChiffreBigInt(bN1);
+  int longbN2 = getNbChiffreBigInt(bN2);
+  int longAdd;
+  if (longbN1>longbN2){
+    longAdd = longbN1;
+  }else{
+    longAdd = longbN2;
+  }
+  int overflow=0;
+  if (longAdd>=TAILLEMAX){
+    overflow=1;
+  }
+  for (int i = 0;i<longAdd+1;i++){
+    int r;
+    if (retenue) {
+      r=1+bN1[i]+bN2[i];
+    }else{
+      r=bN1[i]+bN2[i];
+    }
+    retenue=false;
+    if (r>9){
+      retenue=true;
+      //allocation et mise à 0
+      bigInt rBigInt=initBigInt();
+      //on transforme un int en bigInt.rBigInt stocke donc, une fois la méthode faite, r
+      intToBigInt(r,rBigInt);
+      res[i]=rBigInt[0];
+      freeBigInt(rBigInt);
+    }else{
+      res[i]=r;
+    }
+  }
+  return overflow;
 }
 
 
@@ -42,6 +76,11 @@ int addBigInt(bigInt bN1,bigInt bN2,bigInt res)
 * ************************************************/
 int mulBigInt(bigInt bN1,bigInt bN2,bigInt res)
 {
+  bigInt bNTemp;
+  for (int i=0;i<getNbChiffreBigInt(bN1);i++){
+    bNTemp=initBigInt();
+    fot (int j=0;j<)
+  }
   return 0;
  }
 
