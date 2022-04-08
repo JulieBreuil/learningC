@@ -115,3 +115,18 @@ int mulBigInt(bigInt bN1,bigInt bN2,bigInt res)
   return overflow;
  }
 
+/*!
+************************************************
+* \brief fait la factorielle de bN1
+* \param  bN1 Grand Entier
+* \param  res le grand entier bN1!
+* \result Un entier: 1 en cas d'overflos, O sinon
+* \warning res doit être déjà alloué,
+* ************************************************/
+int factorielleBigInt(bigInt bN1,bigInt res){
+  bigInt bNTemp = initBigInt();
+  while (bigIntEqualQ(bNTemp,bN1)==0){
+    //incrementer bNTemp de 1
+    mulBigInt(bNTemp,res,res);
+  }
+}
