@@ -8,21 +8,28 @@
 
 int main()
 {
-  bigInt bN1, bN2,bN;
+  bigInt bN1, bN2,bN,bNT,res;
 
   bN1=initBigInt();
   bN2=initBigInt();
   bN=initBigInt();
-  
+  bNT=initBigInt();
+  res=initBigInt();
 
   fprintf(stdout,"Developping big Int library\n");
-  intToBigInt(1,bN1);
-  intToBigInt(9,bN2);
+  intToBigInt(56,bN1);
+  intToBigInt(2,bN2);
+  fprintf(stdout,"Test de la fonction times10BigInt\n");
+  times10BigInt(bN1,bNT);
+  printBigInt(bNT);
+  fprintf(stdout,"Test de la fonction mulBigInt\n");
+  mulBigInt(bN1,bN2,res);
+  printBigInt(res);
+
   addBigInt(bN1,bN2,bN);
-  printBigInt(bN);
 
   if (bigIntToInt(bN)!= 10) 
-    printf("Error addBigInt is not correct: %d + %d != %d\n",
+    printf("\nError addBigInt is not correct: %d + %d != %d\n",
 	   bigIntToInt(bN1),bigIntToInt(bN2),bigIntToInt(bN));
   
 

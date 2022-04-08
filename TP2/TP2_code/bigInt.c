@@ -58,8 +58,31 @@ int addBigInt(bigInt bN1,bigInt bN2,bigInt res)
   return overflow;
 }
 
+/*!
+************************************************
+* \brief multiplie par 10 un bigInt
+* équivaut à lui appliquer un décalage
+* \param  bN Grand Entier
+* \param  res le grand entier multiplié par 10
+* \result Un entier: 1 en cas d'overflos, O sinon
+* \warning res doit être déjà alloué,
+* ************************************************/
+int times10BigInt(bigInt bN,bigInt res){
+  int overflow = 0;
+  if (getNbChiffreBigInt(bN)<TAILLEMAX){
+    for (int i= TAILLEMAX;i>0;i--){
+      res[i]=bN[i-1];
+    }
+  }else{
+        for (int i= TAILLEMAX;i>0;i--){
+      res[i]=bN[i-1];
+    }
+    overflow=1;
+  }
 
-
+  res[0]=0;
+  return overflow;
+}
 
 
 /*!
@@ -76,11 +99,19 @@ int addBigInt(bigInt bN1,bigInt bN2,bigInt res)
 * ************************************************/
 int mulBigInt(bigInt bN1,bigInt bN2,bigInt res)
 {
+  int overflow =0;
   bigInt bNTemp;
-  for (int i=0;i<getNbChiffreBigInt(bN1);i++){
+  for (int i=0;i<getNbChiffreBigInt(bN1)+1;i++){
     bNTemp=initBigInt();
-    fot (int j=0;j<)
+    for (int j=0;j<bN1[i];j++){
+      addBigInt(bN2,bNTemp,bNTemp);
+    }
+    for (int j=0;j<i;j++){
+      times10BigInt(bNTemp,bNTemp);
+    }
+    overflow+=addBigInt(res,bNTemp,res);
   }
-  return 0;
+  free(bNTemp);
+  return overflow;
  }
 
