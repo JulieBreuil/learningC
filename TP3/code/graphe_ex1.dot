@@ -1,0 +1,21 @@
+digraph G {
+	 "noeud1";
+	 "noeud2";
+	 "noeud3";
+	 "noeud4";
+	 "noeud5";
+	 "noeud6";
+	 "noeud7";
+	 "noeud8";
+	 "noeud1" -> "noeud2";
+ 	 "noeud1" -> "noeud3";
+ 	 "noeud2" -> "noeud4";
+ 	 "noeud3" -> "noeud4";
+ 	 "noeud3" -> "noeud6";
+ 	 "noeud3" -> "noeud7";
+ 	 "noeud4" -> "noeud5";
+ 	 "noeud5" -> "noeud6";
+ 	 "noeud6" -> "noeud8";
+ 	 "noeud7" -> "noeud8";
+ 	 "noeud8" -> "noeud5";
+ }
