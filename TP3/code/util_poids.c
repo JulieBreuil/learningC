@@ -5,7 +5,9 @@
 #include "util_poids.h"
 
 
-/* Initialisation d'un graphe valué (type GRAPHE_POIDS)  de nb_sommets (sans arcs) */
+/* Initialisation d'un graphe valué (type GRAPHE_POIDS)  de nb_sommets (sans arcs) 
+adj[i][j]=0; poids[i][j]=0; g.marque[i]=0;
+*/
 GRAPHE_POIDS init_poids_mat(int nb_sommets)
 {
   GRAPHE_POIDS g;

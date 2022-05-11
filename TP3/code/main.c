@@ -4,6 +4,7 @@
 #include "graphe_adj_type.h"
 #include "graphe_poids_type.h"
 #include "util_adj.h"
+#include "graphe.h"
 int main()
 {
   GRAPHE g1;
@@ -13,10 +14,10 @@ int main()
   affiche_adj_mat(stdout,g1);
   dotty_adj_dot(g1);
   /* à faire:  fermeture transitive    */
-  /* GRAPHE g2;                        */
-  /*  g2=fermeture_transistive(g1); */
-  /* affiche_adj_mat(stdout,g2);  */
-  /* dotty_adj_dot(g2); */
+  GRAPHE g2;                        
+  g2=fermeture_transistive(g1);
+  affiche_adj_mat(stdout,g2);
+  dotty_adj_dot(g2);
 
   
   /* a faire: disjktra */
