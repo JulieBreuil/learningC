@@ -1,0 +1,3 @@
+export MSP430DIR=/opt/msp430-toolchain
+export PATH=${MSP430DIR}/bin:${MSP430DIR}/bin/bin:$PATH
+export LD_LIBRARY_PATH=${MSP430DIR}/lib:${LD_LIBRARY_PATH}
