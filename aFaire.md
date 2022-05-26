@@ -1,0 +1,3 @@
+- TD1
+- [ ] Faire la partie bibliothèque statique en C
+- [ ] Faire la partie bibliothèques dynamique en C
