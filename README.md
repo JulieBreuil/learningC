@@ -826,3 +826,79 @@ int main(int argc,char *argv[])
     return(0);
 }
 ```
+# TD5
+## Arbres binaires en C
+On commencera avec la définition de type
+suivante pour un noeud d’un arbre binaire d’entier (un arbre étant simplement un pointeur vers un
+noeud). Ici encore l’absence de fils est encodée par la valeur 0 pour le pointeur (on utilise plutôt la
+macro NULL, définie dans <stdlib.h>).
+
+### Exemple d'utilisation
+fichier arbre_type.h
+```c
+struct model_noeud
+{
+    int val;
+    struct model_noeud *filsGauche ;
+    struct model_noeud *filsDroit ;
+} ;
+typedef struct model_noeud NOEUD;
+typedef NOEUD *ARBRE;
+```
+
+fichier arbre.h
+```c
+#include "arbre_type.h"
+
+ARBRE creerArbre(int val, ARBRE filsGauche, ARBRE filsDroit);
+void afficheArbre(ARBRE unArbre);
+```
+
+fichier arbre.c
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "arbre.h"
+
+ARBRE creerArbre(int val, ARBRE filsGauche, ARBRE filsDroit)
+{
+    NOEUD *unArbre = (NOEUD *)malloc(sizeof(NOEUD));
+    (*unArbre).val = val;
+    (*unArbre).filsGauche = filsGauche;
+    (*unArbre).filsDroit = filsDroit;
+    return unArbre;
+}
+
+void afficheArbre(ARBRE unArbre)
+{
+    printf("La valeur courante est %d \n",unArbre->val);
+    if (unArbre->filsGauche != NULL)
+    {
+        afficheArbre(unArbre->filsGauche);
+    }
+    if (unArbre->filsDroit != NULL)
+    {
+        afficheArbre(unArbre->filsDroit);
+    }
+}
+```
+
+fichier main.c
+```c
+#include <stdio.h>
+#include "arbre.h"
+
+int main()
+{
+    int val = 3;
+    int vol = 8;
+    int vil = 9;
+    ARBRE a = NULL;
+    ARBRE b = NULL;
+    ARBRE monArbre = creerArbre(val,a,b);
+    ARBRE monArbre2 = creerArbre(vol,a,b);
+    ARBRE monArbre3 = creerArbre(vil,monArbre,monArbre2);
+    printf("Mon abre a pour valeur %d\n", monArbre->val);
+    afficheArbre(monArbre3);
+}
+```
