@@ -1,3 +1,6 @@
 - TD1
 - [ ] Faire la partie bibliothèque statique en C
 - [ ] Faire la partie bibliothèques dynamique en C
+- TD6
+- [ ] Faire la méthode insertionListeTrie2
+- [ ] Faire la méthode fusionListe()

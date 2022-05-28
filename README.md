@@ -1122,3 +1122,291 @@ fait :
   * `(*p1d)[10]` est de type int
   * `(*p1d)` est de type tableau (de taille 10) d’int
   * `p1d` est de type pointeur vers un tableau (de taille 10) d’int
+
+# TD7
+## Les sockets et les types importants
+### Les sockets
+Une socket est une interface de communication introduite par les systèmes Unix pour la 
+communication réseau. Il s’agit d’un point d’accès aux services de la couche transport, c’est-à-dire
+TCP ou UDP. La communication par sockets sur un réseau adopte généralement un modèle
+client-serveur ; en d’autres termes pour communiquer il faut créer un serveur prêt à recevoir
+les requêtes d’un client.
+
+Dans tous les cas, avant d’utiliser une socket il faut la créer, c’est-à-dire créer un descripteur
+associé à l’ensemble des informations constituant la socket (buffers, adresse, port, état, etc. un
+peu comme pour les fichier en C). Ensuite il est éventuellement possible d’attacher la socket
+(i.e. le descripteur) à une adresse représentant la provenance ou la destination des messages
+envoyés.
+
+**Côté serveur** la création de la socket est suivie d’une mise en attente de message dans le cas
+d’une communication UDP, ou de mise en attente de connexion dans le cas d’une communi-
+cation TCP. Dans le cas d’une communication TCP, il est généralement profitable de permettre
+au serveur de gérer plusieurs connexions simultanées ; dans ce cas un nouveau processus sera
+créé pour chaque connexion ou bien les sockets seront enregistrées pour être utilisées grâce à
+l’ appel système `select()`.
+
+**Côté client** la communication se fait tout d’abord en renseignant l’adresse du serveur à
+contacter. Ensuite peut avoir lieu l’envoi proprement dit de données (UDP) ou la demande
+de connexion (TCP).
+
+La communication peut se faire dans les deux sens sur la même socket. Les sockets sont 
+déclinées dans de nombreux langages, nous voyons ici, leur implémentation dans la librairie C
+(souvent nommées sockets posix ou Berkeley socket)
+
+### Les choses à connaître
+* netstat (statistiques réseau) est un outil de ligne de commande qui affiche les connexions
+  réseau (entrantes et sortantes), les tables de routage et un certain nombre de statistiques 
+  d’interface réseau. regarder rapidement la doc, tapez :
+  `netstat -help`
+* les paquets qui circulent sur le réseau sont en big endian
+
+## Création d’un Client TCP
+Simple client TCP se connectant sur le port 20000 de l’hôte local
+```c
+#include <stdio.h>
+#include <stdlib.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <errno.h> 
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/in.h>
+
+in_addr_t get_addr_from_string(char *name)
+{
+  in_addr_t s_addr;
+  struct hostent *hp; 
+  if ((hp = gethostbyname(name)) == NULL) {
+    fprintf(stderr,"Machine %s inconnue\n",name); 
+    exit(3); 
+  }
+  /* l'adresse se trouve dans le champ h_addr de la structure hp */
+  /* la fonction htonl a déjà été appliquée par gethostbyname */
+  s_addr=*(in_addr_t *) hp->h_addr;
+  return (s_addr);
+}
+
+/* exemple d'un client TCP simple */
+
+
+int main(int argc, char *argv[])
+{
+    int sock_client; 
+    int sock_len=sizeof(struct sockaddr_in);
+    struct sockaddr_in connect_addr;
+    
+    /* Creation de la socket */ 
+    if ((sock_client=socket(AF_INET,SOCK_STREAM,0)) == -1)
+      {
+	perror("Creation de socket impossible"); 
+	return -1; 
+      } 
+    
+    /* Preparation de l'adresse d'attachement: 
+       l'adresse sur laquelle nous allons nous connecter */ 
+    connect_addr.sin_family=AF_INET; 
+    
+    /* Adresse: localhost, on suppose que le serveur est sur la machine 
+       Attention: Conversion (interne) -> (reseau) avec htonl et htons 
+       On écoute sur le port 20000 */
+    connect_addr.sin_addr.s_addr=get_addr_from_string("127.0.0.1");
+    connect_addr.sin_port=htons(20000);
+    
+    /* Demande de connection sur la socket */ 
+    if (connect(sock_client,(struct sockaddr*) &connect_addr, sock_len) == -1) {
+      perror ("Connect failed"); 
+      exit(errno);
+    }
+    
+    printf("Connection OK\n");
+
+    return 0;
+}
+```
+
+### La fonction socket
+La fonction socket crée une socket et renvoie son descripteur (un entier donc).
+```c
+int socket(int domain, int type, int protocol);
+```
+Ses arguments sont en général passés sous forme de macro :
+* domain : AF_INET pour l’internet
+* type : SOCK_DGRAM pour une communication UDP, SOCK_STREAM pour une communication
+TCP.
+* protocole : 0 pour le protocole par défaut du type
+
+Ici on a 
+```c
+sock_client=socket(AF_INET,SOCK_STREAM,0);
+```
+
+### Coté client : la fonction connect
+Une fois la socket créée coté client, il faut renseigner l’adresse sur laquelle on désire se connecter
+grâce à la fonction `connect`.
+```c
+int connect(int sockfd, struct sockaddr *serv_addr, socklen_t addrlen);
+```
+
+Le type `soclen_t` est un alias sur _uint32_t_. En cas de succès, la fonction renvoie 0, en cas d’échec
+elle renvoie -1 et met à jour la variable _errno_ avec le numéro d’erreur.
+
+Pour toutes ces fonctions, il est impératifs de tester le résultat pour vérifier l’absence d’erreur, au
+risque d’avoir un programme complètement indébugable.
+
+### Commande nc
+
+It is quite simple to build a very basic client/server model using nc.  On one console, start nc listen‐
+ing on a specific port for a connection.  For example:
+
+           $ nc -l 1234
+
+     nc is now listening on port 1234 for a connection.  On a second console (or a second machine), connect
+     to the machine and port being listened on:
+
+           $ nc 127.0.0.1 1234
+
+### Commande htons
+Conversion (interne) -> (reseau) avec htonl et htons
+
+### En pratique
+Nécessite 2 terminaux
+* Un pour compiler et lancer le client tcp
+* L'autre pour réez une connection en écoute sur le port 20000 de la machine locale avec `nc -l 20000`
+
+## Création d’un Serveur TCP
+Du coté serveur, une fois qu’elle a été créée par la fonction socket, la socket doit être associée à une
+adresse (fonction `bind`), puis elle doit écouter sur cette adresse (fonction `listen`) et enfin accepter
+(ou pas) une connection entrante (fonction `accept`).
+
+### Fonction bind
+```c
+int bind(int sockfd, struct sockaddr *listen_addr, socklen_t addrlen);
+```
+### Fonction listen
+```c
+int listen(int sock, int backlog);
+```
+En général, on utilsera backlog=1
+
+### Fonction accept
+```c
+int accept(int sock, struct sockaddr *adresse, socklen_t *longueur);
+```
+### Code du server tcp
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+
+/* exemple d'un serveur TCP simple */
+
+
+int main(int argc, char *argv[])
+{
+    int sock_serv; 
+    int sock_len=sizeof(struct sockaddr_in);
+    struct sockaddr_in listen_addr;
+    
+    /* Creation de la socket */ 
+    if ((sock_serv=socket(AF_INET,SOCK_STREAM,0)) == -1)
+      {
+	perror("Creation de socket impossible"); 
+	return -1; 
+      } 
+    
+    /* Preparation de l'adresse d'attachement: 
+       l'adresse sur laquelle nous allons nous connecter */ 
+    listen_addr.sin_family=AF_INET; 
+    
+    /* Adresse: localhost, on suppose que le serveur est sur la machine 
+       Attention: Conversion (interne) -> (reseau) avec htonl et htons 
+       On écoute sur le port 20000 */
+    /*INADDR_ANY signifie qu'on écoute sur toutes les interfaces*/
+    listen_addr.sin_addr.s_addr=htonl(INADDR_ANY);
+    listen_addr.sin_port=htons(20000);
+
+    //associe la socket du serveur à une adresse particulière, en général l'adresse locale
+    if ((bind(sock_serv,(struct sockaddr*)&listen_addr,sock_len)) == -1)
+    {
+        perror("association d'une adresse à la socket du serveur impossible");
+        return -1;
+    }
+
+    //serveur se met en écoute sur les connexions entrantes
+    if(listen(sock_serv, 1) == -1)
+    {
+        perror("mise en ecoute du serveur impossible");
+        return -1;
+    }
+    
+    // accpet permet d'accepter des connexions entrantes
+    //cette fonction crée un nouvel socket, qu'on appelle socket_service qui contient les infos sur la connexion
+    int socket_service;
+    socklen_t sock_serv_len=sizeof(struct sockaddr_in);
+    if((socket_service=accept(sock_serv,(struct sockaddr*) &listen_addr, &sock_serv_len)) == -1)
+    {
+        perror("acceptation des connexions entrantes impossible");
+        return -1;
+    }
+
+    printf("Connection accepted on port number %d\n", ntohs(listen_addr.sin_port));
+    printf("IP Address=%u.%u.%u.%u\n",
+        (uint8_t)((listen_addr.sin_addr.s_addr>>24)&255),
+        (uint8_t)((listen_addr.sin_addr.s_addr>>16)&255),
+        (uint8_t)((listen_addr.sin_addr.s_addr>>8)&255),
+        (uint8_t)(listen_addr.sin_addr.s_addr&255));
+    
+    return 0;
+}
+```
+
+### “Adress already in use”
+Lorsqu’on obtient le message “Address already in use”, c’est que le port sur lequel on utilise
+la socket est déjà utilisé, probablement par un précédent processus que vous avez lancé. Une
+solution est de récupérer le numéro de processus avec la commande :
+```shell
+netstat -tulpn | grep <portnumber>
+```
+et de tuer le processus avec la commande :
+```shell
+kill -9 <numprocess>
+```
+
+## Fonctions send et receive
+Maintenant que les deux processus sont connectés par une socket, on peut les faire communiquer
+grâce aux fonctions send et receive (fonction dédiés aux connections tcp :
+```c
+int send(int sock, const void *msg, size_t len, int flags);
+```
+```c
+int recv(int sock, void *buf, int len, unsigned int flags);
+```
+Mettre les flags à 0 ça va bien...
+
+Dans mon code:
+
+Dans tcp_client1.c
+```c
+while (1){
+  char tab [100];
+  strcpy(tab,"coucou");
+  if(send (sock_client, tab, 100, 0) == -1){
+    perror ("send impossible");
+    return -1;
+  }
+}
+```
+
+Dans tcp_server.c
+```c
+while (1){
+    char tab [100];
+    if(recv(socket_service,tab, 100, 0) == -1){
+        perror ("recvimpossible");
+        return -1;
+    }
+    printf("%s\n",tab);
+}
+```
