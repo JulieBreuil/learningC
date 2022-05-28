@@ -902,3 +902,223 @@ int main()
     afficheArbre(monArbre3);
 }
 ```
+
+## Outil d’aide pour les fuites mémoire : Valgrind
+valgrind est un outil de vérification de code à l’exécution. Le code est exécuté dans une machine
+virtuelle qui vérifie les appels, adresses mémoires, etc. valgrind est essentiellement utilisé pour
+découvrir tous les problèmes mémoires : “fuites mémoire” (memory leak : mémoire allouée mais non libérée) et accès en dehors des bornes des tableaux
+
+valgrind est extrêmement simple d’utilisation, si votre programme se lance avec la commande :
+```shell
+monProg arg1 arg2
+```
+il suffit d’exécuter :
+```shell
+valgrind [option] monProg arg1 arg2
+```
+En pratique, il faut déjà excécuter votre programme normalement, puis utiliser valgrind.
+
+## Outils de débugage : GDB
+Nous allons étudier un outil fondamental du développement sous unix : gdb (et une interface
+associée : nemiver ou ddd), debuggeur indispensable pour comprendre certaine erreurs.
+
+Rajouter l’option -g à vos règles de Makefile qui produisent les fichiers .o. par
+exemple
+```makefile
+arbre.o: arbre.c arbre.h arbre_type.h
+    gcc -c -g arbre.c -o arbre.o
+```
+Recompilez votre programme et lancez la commande (en supposant que votre binaire exécutable
+s’appelle main) :
+```shell
+gdb main
+```
+Vous devez avoir une invite gdb.
+* Tapez la commande `break main`, puis `run`.
+* Tapez alors la commande `layout src` qui vous permet de voir le code source en même temps.
+* La commande `backtrace` permet à tout moment de connaître l’enchaînement d’appels de
+fonctions successifs qui ont amené à cet instruction.
+* La commande `step` avance d’une instruction C, c’est à dire qu’à l’appel d’une fonction, elle
+entre dans le corps du code de la fonction.
+* La commande `next` a le même comportement mais elle n’entre pas dans les fonctions appelées,
+elle les exécute d’un seul coup.
+
+gdb est un debugger symbolique, c’est-à-dire un utilitaire Unix permettant de contrôler le dé-
+roulement de programmes C. Il permet (entre autres) de mettre des points d’arrêt dans un
+programme, de visualiser l’état de ses variables, de calculer des expressions, d’appeler inter-
+activement des fonctions, etc.
+
+nemiver ou ddd sont des interfaces graphiques qui facilitent l’utilisation de gdb sous X-
+Window, mais gdb ne nécessite aucun système de fenêtrage, il peut s’exécuter sur un simple
+terminal shell (mode console). Il est indispensable de comprendre le fonctionnement en mode
+gdb pour pouvoir utiliser les ddd.
+
+Lorsque l’on lance gdb avec la commande gdb unexecutable.exe, gdb a chargé l’exécutable, 
+il attend alors une commande gdb, comme par exemple run (pour exécuter le programme), break (pour mettre un point d’arrêt dans le programme), step (pour avancer d’une
+instruction dans le programme), etc. Il y a donc une invite gdb.
+Les points d’arrêt peuvent se positionner au début des fonctions (break main, par exemple),
+ou à une certaine ligne (break 6, par exemple), ou lorsqu’une variable change de valeur
+(watch i, par exemple).
+
+Les commandes importantes (et leur raccourcit) à connaître pour utiliser gdb sont les suivantes :
+* `r` est équivalent à `run`
+* `b main` est équivalent à `break main`
+* `b fonction` est équivalent à `break fonction`
+* `p` var est équivalent à `print var`
+* `d` var est équivalent à `display var`
+* `s` est équivalent à `step`
+* `n` est équivalent à `next`
+* `c` est équivalent à `continue`
+* La commande `run` peut prendre des arguments, le programme est alors exécuté avec les
+arguments donnés
+* La commande `print/x *( 0x000055555555529b)@10` permet d'afficher les 10 valeurs consécutives stockées en 
+mémoire à partir de l’adresse 0x000055555555529b
+* la commande `info` permet d’afficher des informations sur l’état du programme dans le
+débugger. Par exemple `info b` liste les points d’arrêt.
+* La commande `help` est l’aide en ligne de gdb
+
+# TD 6
+## Insertion dans une liste triée : deux moyens
+Il existe deux moyens de définir une fonction f pour modifier une variable : 
+* soit on affecte à la variable le résultat de la fonction f 
+et dans ce cas la fonction elle-même ne modifie par la variable, par exemple `a=f(a);` ou `x=x+1;`
+
+* soit on passe la variable en paramètre par référence à la fonction (et dans ce
+cas, la fonction modifie la variable) : `inc(&x)` avec (par exemple) pour définition de inc :
+```c
+void inc(int *param)
+{
+    *param=*param+1;
+}
+```
+
+Notons que pour les tableaux, on ne peut pas renvoyer un tableau comme résultat d’un fonction
+puisqu’un tableau n’est pas une L-value. On est donc obligé, pour le modifier, de le passer en para-
+mètre d’une fonction. Vous avez déjà fait ça dans le TP2 par exemple (passer un tableau en paramètre
+et le modifier), et vous savez qu’on n’a pas besoin d’ajouter l’opérateur ’&’ devant le tableau passé en
+paramètre. Effectivement, l’opérateur adresse (’&’) est implicite pour un tableau : le nom du tableau
+indique l’adresse du premier élément.
+
+Pour les listes par contre, on peut faire les deux, puisque les listes sont des pointeurs (qui sont des
+L-values). On peut modifier une liste soit en la renvoyant comme résultat d’une fonction, soit en
+passant en paramètre l’adresse de la liste (la liste étant elle-même un pointeur vers un ELEMLIST, on
+passe donc un pointeur vers un pointeur vers un ELEMLIST)
+
+### Passage par valeur
+
+fichier liste_type.h
+```c
+#ifndef listeType_h_
+#define listType_h_
+
+struct model_elem {
+  int elem ;
+  struct model_elem* suivant;
+};
+
+typedef struct model_elem ELEMLISTE;
+
+typedef ELEMLISTE *LISTE; 
+ 
+#endif
+```
+
+fichier liste.h
+```c
+#ifndef list_h_
+#define list_h_
+
+
+void afficherListe(LISTE);	
+LISTE AjouterListeTrie (LISTE, int);
+void AjouterListeTrie2 (LISTE*, int);
+void fusion (LISTE *pliste1, LISTE *pliste2);
+
+#endif
+```
+
+fichier liste.c, méthode insertionListeTrie
+```c
+/*!
+************************************************
+* \brief ajouter un element dans une liste triee
+*    et renvoyer la newListe liste
+* \param liste adresse d'une liste 
+* \param val un entier a ajouter à la liste triee
+* \return Modifie La liste, insère l'élément inséré
+* \return retourne la newListe liste
+**************************************************/    
+LISTE insertionListeTriee (LISTE liste1, int val)
+{
+    LISTE newListe = (LISTE)malloc(sizeof(ELEMLISTE));
+    if (liste1 == NULL){
+        newListe->elem=val;
+        newListe->suivant=NULL;
+        return newListe;
+    }
+    else
+    {
+        if(liste1->elem<val)
+        {
+            liste1->suivant= insertionListeTriee(liste1->suivant,val);
+            return liste1;
+        }
+        else
+        {
+            newListe->elem=val;
+            newListe->suivant=liste1;
+            return newListe;
+        }
+    }
+}
+```
+
+Quelques remarques:
+* Le type LISTE est un pointeur vers ELEMLIST . Autrement dit, ELEMLIST est la valeur et LISTE est le pointeur
+* un raccourci pour `(*newListe).elem` est `newListe->elem`
+
+### Passage par référence
+fichier liste.c, méthode insertionListeTrie2
+```c
+/*!
+************************************************
+* \brief ajouter un element dans une liste triee
+* \param pliste adresse d'une liste 
+* \param val un entier a ajouter à la liste triee
+* \warning On passe un pointeur sur une liste (donc un pointeur
+*   sur un pointeur sur un element)
+* \return Modifie La liste, insère l'élément inséré
+**************************************************/    
+void insertionListeTriee2 (LISTE *pliste, int val)
+{
+    return;
+}
+```
+
+Quelques remarques:
+* pliste est un pointeur vers un objet de type LISTE donc pliste est un pointeur vers un pointeur qui pointe vers ELEMLIST
+* Autrement dit, `*pliste` est de type `struct model_elem *` tandis que `pliste` est de type `struct model_elem **`
+* Le premier paramètre de la fonction insertionListeTriee2 est de type `struct model_elem **`, il est parfois nécessaire
+d'utiliser le caractère `&`, par exemple `insertionListeTriee2(&((*pliste)->suivant),val);`
+
+## Le typedef
+Pour comprendre le typedef :
+* le mot clé typedef est suivit d’une déclaration qui a la même syntaxe qu’une déclaration
+de variable, mais c’est une déclaration de type.
+* On rappelle d’abord que l’opérateur * est associatif à droite (cf le poly ou google), on
+`int **a` revient à `int (*(*a))` ;
+* Il faut connaître les priorité des opérateurs. L’opérateur `[]` est plus prioritaire que
+l’étoile dont la deuxième définition revient à :
+
+`typedef int *p1d[10];` ⇔ `typedef int (*(p1d[10]));`
+* Donc pour bien comprendre le type à partir de `typedef int (*(p1d[10]));`, on
+fait :
+  * `(*(p1d[10]))` est de type int
+  * donc `(p1d[10]))` est de type pointeur vers un int
+  * l’opérateur `[]` indique que ce qui est précède est un tableau plutot qu’un simple
+  scalaire donc
+  * `p1d` est de type tableau (de taille 10) de pointeurs vers int
+* Pour l’autre `typedef int (*p1d)[10];`
+  * `(*p1d)[10]` est de type int
+  * `(*p1d)` est de type tableau (de taille 10) d’int
+  * `p1d` est de type pointeur vers un tableau (de taille 10) d’int

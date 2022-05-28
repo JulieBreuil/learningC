@@ -22,14 +22,8 @@ LISTE insertionListeTriee(LISTE liste1, int val)
     return nouvelle;
   }else{
     if (val>(*liste1).elem){
-      nouvelle->elem=liste1->elem;
       liste1->suivant=insertionListeTriee((*liste1).suivant,val);
       return liste1;
-    }
-    else if (val<(*liste1).elem){
-      nouvelle->elem = val;
-      nouvelle->suivant = liste1;
-      return nouvelle;
     }
     else{
       nouvelle->elem = val;
@@ -47,9 +41,13 @@ LISTE insertionListeTriee(LISTE liste1, int val)
 * \warning On passe un pointeur sur une liste (donc un pointeur
 *   sur un pointeur sur un element)
 * \return Modifie La liste, insère l'élément inséré
-**************************************************/    
-void insertionListeTriee2 (LISTE *pliste, int val)	
-{ 
+**************************************************/
+void insertionListeTriee2 (LISTE *pliste, int val)
+{
+    return;
+}
+/*void insertionListeTriee2 (LISTE *pliste, int val)
+{
   if (*pliste == NULL){
     LISTE pliste = (LISTE)malloc(sizeof (ELEMLISTE));
     (*pliste)->elem = val;
@@ -63,7 +61,7 @@ void insertionListeTriee2 (LISTE *pliste, int val)
       (*pliste)->elem=val;
     }
   }
-}
+}*/
 
 /*!
 ************************************************
@@ -104,6 +102,7 @@ void afficherListe(LISTE liste)
  liste1=insertionListeTriee(liste1,4);
  liste1=insertionListeTriee(liste1,5);
  liste1=insertionListeTriee(liste1,2);
+ liste1=insertionListeTriee(liste1,3);
  fprintf(stdout,"liste1:");
  afficherListe(liste1);
  fprintf(stdout,"Listes triés créées avec insertionListeTriee2\n");

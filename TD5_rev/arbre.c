@@ -23,3 +23,21 @@ void afficheArbre(ARBRE unArbre)
         afficheArbre(unArbre->filsDroit);
     }
 }
+
+int max(int a, int b)
+{
+    if (a>b)
+    {
+        return a;
+    }
+    return b;
+}
+
+int hauteurArbre(ARBRE unArbre)
+{
+    if (unArbre!=NULL)
+    {
+        return 1+max(hauteurArbre(unArbre->filsGauche),hauteurArbre(unArbre->filsDroit));
+    }
+    return 0;
+}

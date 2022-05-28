@@ -2,3 +2,4 @@
 
 ARBRE creerArbre(int val, ARBRE filsGauche, ARBRE filsDroit);
 void afficheArbre(ARBRE unArbre);
+int hauteurArbre(ARBRE unARbre);
